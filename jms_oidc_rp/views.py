@@ -119,9 +119,15 @@ class OIDCAuthCallbackView(View):
         # missing or if no state can be retrieved from the current session.
 
         if (
-            ((nonce and oidc_rp_settings.USE_NONCE) or not oidc_rp_settings.USE_NONCE) and
-            ((state and oidc_rp_settings.USE_STATE) or not oidc_rp_settings.USE_STATE) and
-            ('code' in callback_params and 'state' in callback_params)
+            ((nonce and oidc_rp_settings.USE_NONCE) or not oidc_rp_settings.USE_NONCE)
+            and
+            (
+                (state and oidc_rp_settings.USE_STATE and 'state' in callback_params)
+                or
+                (not oidc_rp_settings.USE_STATE)
+            )
+            and
+            ('code' in callback_params)
         ):
             # Ensures that the passed state values is the same as the one that was previously
             # generated when forging the authorization request. This is necessary to mitigate
